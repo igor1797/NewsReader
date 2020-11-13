@@ -1,14 +1,13 @@
 package igor.kuridza.dice.newsreader.ui.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.fragment.app.Fragment
 import igor.kuridza.dice.newsreader.R
+import igor.kuridza.dice.newsreader.databinding.FragmentNewsListBinding
 import igor.kuridza.dice.newsreader.ui.adapters.NewsAdapter
-import kotlinx.android.synthetic.main.fragment_news_list.*
 import org.koin.android.viewmodel.ext.android.viewModel
 
 class NewsListFragment : Fragment() {
@@ -24,14 +23,15 @@ class NewsListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setUpRecycler()
+        setUpBindingData(view)
         observeNewsList()
     }
 
-    private fun setUpRecycler(){
-        newsRecycler.apply {
+    private fun setUpBindingData(view: View){
+        val binding = FragmentNewsListBinding.bind(view)
+        binding.apply {
             adapter = newsAdapter
-            layoutManager = LinearLayoutManager(this@NewsListFragment.context)
+            lifecycleOwner = this@NewsListFragment
         }
     }
 
