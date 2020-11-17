@@ -6,13 +6,15 @@ import androidx.lifecycle.ViewModel
 import igor.kuridza.dice.newsreader.model.SingleNews
 import igor.kuridza.dice.newsreader.repositories.NewsRepository
 
-class NewsListViewModel(newsRepository: NewsRepository): ViewModel(){
+class NewsListViewModel(
+    private val newsRepository: NewsRepository
+): ViewModel() {
 
     private var mNewsList = MutableLiveData<List<SingleNews>>()
     val newsList: LiveData<List<SingleNews>>
-            get() = mNewsList
+        get() = mNewsList
 
     init {
-        mNewsList = newsRepository.getNewsListFromApi() as MutableLiveData<List<SingleNews>>
+        mNewsList = newsRepository.getNewsList() as MutableLiveData<List<SingleNews>>
     }
 }
