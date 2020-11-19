@@ -1,29 +1,22 @@
 package igor.kuridza.dice.newsreader.ui.fragments
 
-import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import igor.kuridza.dice.newsreader.R
 import igor.kuridza.dice.newsreader.databinding.FragmentNewsListBinding
 import igor.kuridza.dice.newsreader.ui.adapters.NewsAdapter
-import org.koin.android.viewmodel.ext.android.viewModel
+import igor.kuridza.dice.newsreader.ui.fragments.base.BaseFragment
+import org.koin.android.viewmodel.ext.android.sharedViewModel
 
-class NewsListFragment : Fragment() {
+class NewsListFragment : BaseFragment(), NewsAdapter.SingleNewsClickListener {
 
-    private val newsListViewModel: NewsListViewModel by viewModel()
-    private val newsAdapter: NewsAdapter by lazy { NewsAdapter() }
+    private val newsListViewModel: NewsListViewModel by sharedViewModel()
+    private val newsAdapter: NewsAdapter by lazy { NewsAdapter(this) }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_news_list, container, false)
-    }
+    override fun getLayoutResourceId(): Int = R.layout.fragment_news_list
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        setUpBindingData(view)
+    override fun setUpUi() {
+        setUpBindingData(this.requireView())
         observeNewsList()
     }
 
@@ -39,5 +32,10 @@ class NewsListFragment : Fragment() {
         newsListViewModel.newsList.observe(viewLifecycleOwner){
             newsAdapter.setNews(it)
         }
+    }
+
+    override fun onSingleNewsClicked(positionOfSingleNewsInList: Int) {
+        val action = NewsListFragmentDirections.goToSingleNewsDetailsViewPagerFragment(positionOfSingleNewsInList)
+        findNavController().navigate(action)
     }
 }

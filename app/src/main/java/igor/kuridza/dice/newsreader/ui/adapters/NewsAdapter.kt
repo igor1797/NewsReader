@@ -8,7 +8,9 @@ import igor.kuridza.dice.newsreader.R
 import igor.kuridza.dice.newsreader.databinding.ItemNewsBinding
 import igor.kuridza.dice.newsreader.model.SingleNews
 
-class NewsAdapter: RecyclerView.Adapter<NewsAdapter.NewsHolder>(){
+class NewsAdapter(
+    private val itemClickListener: SingleNewsClickListener
+): RecyclerView.Adapter<NewsAdapter.NewsHolder>(){
 
     private var news = mutableListOf<SingleNews>()
 
@@ -19,7 +21,7 @@ class NewsAdapter: RecyclerView.Adapter<NewsAdapter.NewsHolder>(){
     }
 
     override fun onBindViewHolder(holder: NewsHolder, position: Int) {
-        holder.bindItem(news[position])
+        holder.bindItem(news[position], itemClickListener, position)
     }
 
     override fun getItemCount(): Int = news.size
@@ -31,11 +33,17 @@ class NewsAdapter: RecyclerView.Adapter<NewsAdapter.NewsHolder>(){
     }
 
     inner class NewsHolder(private val binding: ItemNewsBinding): RecyclerView.ViewHolder(binding.root){
-        fun bindItem(singleNews: SingleNews){
+        fun bindItem(singleNews: SingleNews, itemClickListener: SingleNewsClickListener, position: Int){
             binding.apply {
                 this.singleNews = singleNews
+                singleNewsClickListener = itemClickListener
+                positionOfSingleNewsInList = position
                 executePendingBindings()
             }
         }
+    }
+
+    interface SingleNewsClickListener{
+        fun onSingleNewsClicked(positionOfSingleNewsInList: Int)
     }
 }

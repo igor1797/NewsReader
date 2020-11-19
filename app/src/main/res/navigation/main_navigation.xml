@@ -9,5 +9,27 @@
         android:id="@+id/newsFragment"
         android:name="igor.kuridza.dice.newsreader.ui.fragments.NewsListFragment"
         android:label="fragment_news"
-        tools:layout="@layout/fragment_news_list" />
+        tools:layout="@layout/fragment_news_list" >
+        <action
+            android:id="@+id/goToSingleNewsDetailsViewPagerFragment"
+            app:destination="@id/viewPagerFragment" />
+        <argument
+            android:name="positionOfSingleNewsInList"
+            app:argType="integer">
+        </argument>
+    </fragment>
+
+    <fragment
+        android:id="@+id/viewPagerFragment"
+        android:name="igor.kuridza.dice.newsreader.ui.fragments.SingleNewsDetailsFragment"
+        android:label="fragment_view_pager"
+        tools:layout="@layout/fragment_single_news_details">
+        <argument
+            android:name="positionOfSingleNewsInList"
+            app:argType="integer">
+        </argument>
+        <action
+            android:id="@+id/goToNewsListFragment"
+            app:destination="@id/newsFragment" />
+    </fragment>
 </navigation>
