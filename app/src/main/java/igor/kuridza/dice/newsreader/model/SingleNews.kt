@@ -14,7 +14,6 @@ data class SingleNews(
     val id: Int,
     val title: String?,
     val description: String?,
-    val content: String?,
     @SerializedName("urlToImage")
     val imagePath: String?
 ): Parcelable

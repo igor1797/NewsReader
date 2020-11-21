@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="singleNews"
+            type="igor.kuridza.dice.newsreader.model.SingleNews" />
+
+        <variable
+            name="positionOfSingleNewsInList"
+            type="Integer" />
+        <variable
+            name="singleNewsClickListener"
+            type="igor.kuridza.dice.newsreader.ui.adapters.NewsAdapter.SingleNewsClickListener" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="300dp"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:onClick="@{() -> singleNewsClickListener.onSingleNewsClicked(positionOfSingleNewsInList)}"
+        >
+
+        <ImageView
+            android:id="@+id/newsImage"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            app:imageUrl="@{singleNews.imagePath}"
+            android:contentDescription="@string/newsImageContentDescriptionText"
+            android:scaleType="centerCrop"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"/>
+
+        <TextView
+            android:id="@+id/newsTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@{singleNews.title}"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"/>
+
+        <TextView
+            android:id="@+id/newsDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:text="@{singleNews.description}"
+            android:ellipsize="end"
+            android:maxLines="3" />
+    </LinearLayout>
+</layout>

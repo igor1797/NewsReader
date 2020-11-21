@@ -6,3 +6,5 @@ const val SORT_BY_TOP = "top"
 
 const val NEWS_DATABASE_TABLE_NAME = "News"
 const val NEWS_DATABASE_NAME = "News database"
+
+const val VIEW_PAGER_CURRENT_ITEM_POSITION = "ViewPagerItemPosition"

@@ -2,4 +2,8 @@
     <string name="app_name">News reader</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="newsImageContentDescriptionText">News image</string>
+    <string name="errorDialogTitle">Error</string>
+    <string name="errorDialogMessage">Ups, error occurred!</string>
+    <string name="errorNegativeButtonText">OK</string>
+    <string name="noInternetConnectionText">No internet connection!</string>
 </resources>

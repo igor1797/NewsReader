@@ -29,7 +29,7 @@ val newsDatabaseModule = module {
         Room.databaseBuilder(
             androidContext(),
             NewsDatabase::class.java, NEWS_DATABASE_NAME
-        ).fallbackToDestructiveMigration().allowMainThreadQueries().build()
+        ).fallbackToDestructiveMigration().build()
     }
 
     fun provideNewsDao(newsDatabase: NewsDatabase): NewsDao{

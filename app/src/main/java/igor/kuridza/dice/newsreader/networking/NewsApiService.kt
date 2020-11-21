@@ -1,7 +1,7 @@
 package igor.kuridza.dice.newsreader.networking
 
 import igor.kuridza.dice.newsreader.model.NewsListResponse
-import retrofit2.Call
+import io.reactivex.Single
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -12,5 +12,5 @@ interface NewsApiService {
         @Query("apiKey") apiKey: String,
         @Query("source") source: String,
         @Query("sortBy") sortBy: String
-    ): Call<NewsListResponse>
+    ): Single<NewsListResponse>
 }

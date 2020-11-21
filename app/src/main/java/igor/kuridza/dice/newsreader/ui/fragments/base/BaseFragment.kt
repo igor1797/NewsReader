@@ -14,10 +14,10 @@ abstract class BaseFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setUpUi()
+        setUpUi(savedInstanceState)
     }
 
     abstract fun getLayoutResourceId(): Int
 
-    abstract fun setUpUi()
+    abstract fun setUpUi(savedInstanceState: Bundle?)
 }

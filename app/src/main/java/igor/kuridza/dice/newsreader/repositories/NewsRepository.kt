@@ -6,15 +6,16 @@ import androidx.lifecycle.MutableLiveData
 import igor.kuridza.dice.newsreader.common.API_KEY
 import igor.kuridza.dice.newsreader.common.BBC_NEWS_SOURCE
 import igor.kuridza.dice.newsreader.common.SORT_BY_TOP
+import igor.kuridza.dice.newsreader.common.addTo
 import igor.kuridza.dice.newsreader.database.NewsDao
-import igor.kuridza.dice.newsreader.model.NewsListResponse
+import igor.kuridza.dice.newsreader.model.Resource
 import igor.kuridza.dice.newsreader.model.SingleNews
 import igor.kuridza.dice.newsreader.networking.NewsApiService
 import igor.kuridza.dice.newsreader.persistence.TimeDataStorePrefs
 import igor.kuridza.dice.newsreader.utils.TimeService
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 
 class NewsRepository(
     private val newsService: NewsApiService,
@@ -22,30 +23,51 @@ class NewsRepository(
     private val timeDataStorePrefs: TimeDataStorePrefs,
     private val timeService: TimeService
 ) {
+    private val disposable = CompositeDisposable()
 
     private fun clearDatabaseAndSaveNews(newsList: List<SingleNews>){
         newsDao.clearAllNews()
-        newsList.forEach {
-            newsDao.insertSingleNews(it)
-        }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                {
+                    Log.d(NewsRepository::class.java.name, "clearDatabaseAndSaveNews: successfully delete news")
+                },
+                {
+                    Log.e(NewsRepository::class.java.name, "clearDatabaseAndSaveNews: unsuccessful deletion of news. ${it.message}")
+                }
+            ).addTo(disposable)
+
+        newsDao.insertNewsList(newsList)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                {
+                    Log.d(NewsRepository::class.java.name, "insertNewsList: successfully saving news")
+                },
+                {
+                    Log.e(NewsRepository::class.java.name, "insertNewsList: unsuccessful news saving. ${it.message}")
+                }
+            ).addTo(disposable)
     }
 
-    fun getNewsList(): LiveData<List<SingleNews>>{
-        val storedTime = timeDataStorePrefs.getTime()
-        return if (isStoredDataEmpty() || isStoredDataOlderThanFiveMinutes(storedTime)) {
-            storeCurrentTime()
+    fun getNewsList(): LiveData<Resource<List<SingleNews>>>{
+        return if(isStoredDataOlderThanFiveMinutes() || isDatabaseEmpty()){
             fetchAndCacheTopBbcNewsListFromApi()
-        } else {
+        }else {
             getNewsListFromCache()
         }
     }
 
-    private fun isStoredDataEmpty(): Boolean{
-        return getNewsListFromCache().value?.isEmpty() ?: true
+    private fun isStoredDataOlderThanFiveMinutes(): Boolean{
+        val storedTime = timeDataStorePrefs.getTime()
+        return timeService.isStoredDataOlderThanFiveMinutes(storedTime)
     }
 
-    private fun isStoredDataOlderThanFiveMinutes(storedTime: Long): Boolean{
-        return (timeService.isStoredDataOlderThanFiveMinutes(storedTime) && storedTime != 0L)
+    private fun isDatabaseEmpty(): Boolean{
+        val storedTime = timeDataStorePrefs.getTime()
+        //If stored time == 0L than local database is empty, because 0L is default stored time
+        return storedTime == 0L
     }
 
     private fun storeCurrentTime(){
@@ -53,31 +75,45 @@ class NewsRepository(
         timeDataStorePrefs.storeTime(currentTime)
     }
 
-    private fun fetchAndCacheTopBbcNewsListFromApi(): LiveData<List<SingleNews>> {
-        val newsList = MutableLiveData<List<SingleNews>>()
-        newsService.getNews(API_KEY, BBC_NEWS_SOURCE, SORT_BY_TOP).enqueue(object : Callback<NewsListResponse> {
-            override fun onResponse(
-                call: Call<NewsListResponse>,
-                response: Response<NewsListResponse>
-            ) {
-                if (response.isSuccessful) {
-                    response.body()?.news?.let {
-                        newsList.value = it
-                        clearDatabaseAndSaveNews(it)
-                    }
+    private fun fetchAndCacheTopBbcNewsListFromApi(): LiveData<Resource<List<SingleNews>>> {
+        val newsList = MutableLiveData<Resource<List<SingleNews>>>()
+        newsList.postValue(Resource.Loading())
+        newsService.getNews(API_KEY, BBC_NEWS_SOURCE, SORT_BY_TOP)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                { response ->
+                    storeCurrentTime()
+                    newsList.postValue(Resource.Success(response.news))
+                    clearDatabaseAndSaveNews(response.news)
+                },
+                { throwable ->
+                    newsList.postValue(Resource.Error(throwable.message))
                 }
-            }
+            ).addTo(disposable)
 
-            override fun onFailure(call: Call<NewsListResponse>, t: Throwable) {
-                Log.d("NewsRepository", "onFailure: ${t.message}")
-            }
-        })
         return newsList
     }
 
-    private fun getNewsListFromCache(): LiveData<List<SingleNews>>{
-        val newsList = MutableLiveData<List<SingleNews>>()
-        newsList.value = newsDao.getAllNews()
+    private fun getNewsListFromCache(): LiveData<Resource<List<SingleNews>>> {
+        val newsList = MutableLiveData<Resource<List<SingleNews>>>()
+        newsList.postValue(Resource.Loading())
+        newsDao.getAllNews()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                {
+                    newsList.postValue(Resource.Success(it))
+                },
+                {
+                    newsList.postValue(Resource.Error(it.message))
+                }
+            ).addTo(disposable)
+
         return newsList
+    }
+
+    fun clearDisposable(){
+        disposable.clear()
     }
 }
