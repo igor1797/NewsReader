@@ -7,10 +7,11 @@ import retrofit2.http.Query
 
 interface NewsApiService {
 
-    @GET("v1/articles")
+    @GET("v2/top-headlines")
     fun getNews(
-        @Query("apiKey") apiKey: String,
-        @Query("source") source: String,
-        @Query("sortBy") sortBy: String
+        @Query("sources") source: String,
+        @Query("pageSize") perPage: Int,
+        @Query("page") page: Int,
+        @Query("apiKey") apiKey: String
     ): Single<NewsListResponse>
 }

@@ -8,7 +8,7 @@ import igor.kuridza.dice.newsreader.common.loadImage
 object DataBindingAdapter {
 
     @BindingAdapter("app:imageUrl")
-    @JvmStatic fun setImageUrl(imageView: ImageView, imageUrl: String){
+    @JvmStatic fun setImageUrl(imageView: ImageView, imageUrl: String?){
         imageView.loadImage(imageUrl)
     }
 

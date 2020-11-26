@@ -1,20 +1,18 @@
-package igor.kuridza.dice.newsreader.ui.fragments
+package igor.kuridza.dice.newsreader.ui.fragments.newslist
 
-import android.content.res.Configuration
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
 import igor.kuridza.dice.newsreader.R
 import igor.kuridza.dice.newsreader.common.gone
 import igor.kuridza.dice.newsreader.common.visible
 import igor.kuridza.dice.newsreader.databinding.FragmentNewsListBinding
 import igor.kuridza.dice.newsreader.model.Resource
 import igor.kuridza.dice.newsreader.ui.adapters.NewsAdapter
+import igor.kuridza.dice.newsreader.ui.fragments.NewsListViewModel
 import igor.kuridza.dice.newsreader.ui.fragments.base.BaseFragment
 import kotlinx.android.synthetic.main.fragment_dialog_error.*
 import kotlinx.android.synthetic.main.fragment_news_list.*
@@ -41,15 +39,12 @@ class NewsListFragment : BaseFragment(), NewsAdapter.SingleNewsClickListener {
     }
 
     private fun observeNewsList() {
-        newsListViewModel.newsList.observe(viewLifecycleOwner) { response ->
-            when (response) {
-                is Resource.Loading -> {
-                    progressBar.visible()
-                }
+        newsListViewModel.newsList.observe(this, {
+            when (it) {
                 is Resource.Success -> {
-                    val news = response.data
-                    if(news != null) {
-                        newsAdapter.setNews(response.data)
+                    val newsList = it.data
+                    newsList?.let {
+                        newsAdapter.submitData(lifecycle, newsList)
                         progressBar.gone()
                     }
                 }
@@ -57,8 +52,11 @@ class NewsListFragment : BaseFragment(), NewsAdapter.SingleNewsClickListener {
                     displayDialogErrorAlert()
                     progressBar.gone()
                 }
+                is Resource.Loading -> {
+                    progressBar.visible()
+                }
             }
-        }
+        })
     }
 
     private fun displayDialogErrorAlert(){
@@ -74,7 +72,9 @@ class NewsListFragment : BaseFragment(), NewsAdapter.SingleNewsClickListener {
     }
 
     override fun onSingleNewsClicked(positionOfSingleNewsInList: Int) {
-        val action = NewsListFragmentDirections.goToSingleNewsDetailsViewPagerFragment(positionOfSingleNewsInList)
+        val action = NewsListFragmentDirections.goToSingleNewsDetailsViewPagerFragment(
+            positionOfSingleNewsInList
+        )
         findNavController().navigate(action)
     }
 }

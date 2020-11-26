@@ -10,10 +10,9 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 @Entity(tableName = NEWS_DATABASE_TABLE_NAME)
 data class SingleNews(
-    @PrimaryKey(autoGenerate = true)
-    val id: Int,
-    val title: String?,
+    @PrimaryKey
+    val title: String,
     val description: String?,
     @SerializedName("urlToImage")
-    val imagePath: String?
+    val imagePath: String?,
 ): Parcelable

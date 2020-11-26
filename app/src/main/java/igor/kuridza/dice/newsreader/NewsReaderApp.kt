@@ -17,7 +17,8 @@ class NewsReaderApp: Application(){
                 viewModelModule,
                 dataStoreModule,
                 newsDatabaseModule,
-                timeUtilModule
+                timeUtilModule,
+                pagingModule
             ))
         }
     }

@@ -1,4 +1,4 @@
-package igor.kuridza.dice.newsreader.ui.fragments
+package igor.kuridza.dice.newsreader.ui.fragments.singlenews
 
 import android.os.Bundle
 import androidx.navigation.fragment.findNavController
@@ -7,6 +7,7 @@ import androidx.viewpager2.widget.ViewPager2
 import igor.kuridza.dice.newsreader.R
 import igor.kuridza.dice.newsreader.common.VIEW_PAGER_CURRENT_ITEM_POSITION
 import igor.kuridza.dice.newsreader.ui.adapters.ViewPagerAdapter
+import igor.kuridza.dice.newsreader.ui.fragments.NewsListViewModel
 import igor.kuridza.dice.newsreader.ui.fragments.base.BaseFragment
 import kotlinx.android.synthetic.main.fragment_single_news_details.*
 import org.koin.android.viewmodel.ext.android.sharedViewModel
@@ -32,11 +33,11 @@ class SingleNewsDetailsFragment : BaseFragment(){
     }
 
     private fun observeNewsList(){
-        newsListViewModel.newsList.observe(viewLifecycleOwner){
-            val news = it.data
-            if(news != null)
-                viewPagerAdapter.setNews(it.data)
-        }
+       newsListViewModel.newsList.observe(this){
+           it.data?.let { pagingData ->
+               viewPagerAdapter.submitData(lifecycle, pagingData)
+           }
+       }
     }
 
     private fun setupToolbar(){
