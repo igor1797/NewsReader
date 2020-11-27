@@ -9,9 +9,6 @@
             type="igor.kuridza.dice.newsreader.model.SingleNews" />
 
         <variable
-            name="positionOfSingleNewsInList"
-            type="Integer" />
-        <variable
             name="singleNewsClickListener"
             type="igor.kuridza.dice.newsreader.ui.adapters.NewsAdapter.SingleNewsClickListener" />
     </data>
@@ -19,7 +16,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="100dp"
-        android:onClick="@{() -> singleNewsClickListener.onSingleNewsClicked(positionOfSingleNewsInList)}"
+        android:onClick="@{() -> singleNewsClickListener.onSingleNewsClicked(singleNews.title)}"
         >
 
         <ImageView

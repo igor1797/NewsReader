@@ -6,5 +6,5 @@ data class NewsListResponse(
     val status: String,
     val totalResults: Int,
     @SerializedName("articles")
-    val news: List<SingleNews>
+    val newsList: List<SingleNews>
 )

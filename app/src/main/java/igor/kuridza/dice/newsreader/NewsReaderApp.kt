@@ -15,7 +15,7 @@ class NewsReaderApp: Application(){
                 networkingModule,
                 repositoryModule,
                 viewModelModule,
-                dataStoreModule,
+                prefsModule,
                 newsDatabaseModule,
                 timeUtilModule,
                 pagingModule

@@ -14,8 +14,8 @@
             android:id="@+id/goToSingleNewsDetailsViewPagerFragment"
             app:destination="@id/viewPagerFragment" />
         <argument
-            android:name="positionOfSingleNewsInList"
-            app:argType="integer">
+            android:name="titleOfSingleNewsInList"
+            app:argType="string">
         </argument>
     </fragment>
 
@@ -25,11 +25,8 @@
         android:label="fragment_view_pager"
         tools:layout="@layout/fragment_single_news_details">
         <argument
-            android:name="positionOfSingleNewsInList"
-            app:argType="integer">
+            android:name="titleOfSingleNewsInList"
+            app:argType="string">
         </argument>
-        <action
-            android:id="@+id/goToNewsListFragment"
-            app:destination="@id/newsFragment" />
     </fragment>
 </navigation>

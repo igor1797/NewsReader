@@ -3,13 +3,14 @@ package igor.kuridza.dice.newsreader.ui.adapters
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
-import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.RecyclerView
 import igor.kuridza.dice.newsreader.R
 import igor.kuridza.dice.newsreader.databinding.ItemSingleNewsDetailsBinding
 import igor.kuridza.dice.newsreader.model.SingleNews
 
-class ViewPagerAdapter: PagingDataAdapter<SingleNews, ViewPagerAdapter.ViewPagerHolder>(NewsAdapter.COMPARATOR){
+class ViewPagerAdapter: RecyclerView.Adapter<ViewPagerAdapter.ViewPagerHolder>(){
+
+    private val newsList = arrayListOf<SingleNews>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewPagerHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -18,14 +19,20 @@ class ViewPagerAdapter: PagingDataAdapter<SingleNews, ViewPagerAdapter.ViewPager
     }
 
     override fun onBindViewHolder(holder: ViewPagerHolder, position: Int) {
-        val singleNews = getItem(position)
-        singleNews?.let {
-            holder.bindItem(singleNews)
-        }
+        val singleNews = newsList[position]
+        holder.bindItem(singleNews)
     }
 
-    fun getSingleNewsTitleByPosition(position: Int): String?{
-        return getItem(position)?.title
+    override fun getItemCount(): Int = newsList.size
+
+    fun setNewsList(newsList: List<SingleNews>){
+        this.newsList.clear()
+        this.newsList.addAll(newsList)
+        notifyDataSetChanged()
+    }
+
+    fun getSingleNewsByPosition(position: Int): SingleNews{
+        return newsList[position]
     }
 
     inner class ViewPagerHolder(private val bindingItem: ItemSingleNewsDetailsBinding): RecyclerView.ViewHolder(bindingItem.root){

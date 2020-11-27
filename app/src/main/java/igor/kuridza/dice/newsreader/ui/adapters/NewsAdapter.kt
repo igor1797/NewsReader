@@ -23,23 +23,22 @@ class NewsAdapter(
     override fun onBindViewHolder(holder: NewsHolder, position: Int) {
         val singleNews = getItem(position)
         if(singleNews != null) {
-            holder.bindItem(singleNews, itemClickListener, position)
+            holder.bindItem(singleNews, itemClickListener)
         }
     }
 
     inner class NewsHolder(private val binding: ItemNewsBinding): RecyclerView.ViewHolder(binding.root){
-        fun bindItem(singleNews: SingleNews, itemClickListener: SingleNewsClickListener, position: Int){
+        fun bindItem(singleNews: SingleNews, itemClickListener: SingleNewsClickListener){
             binding.apply {
                 this.singleNews = singleNews
                 singleNewsClickListener = itemClickListener
-                positionOfSingleNewsInList = position
                 executePendingBindings()
             }
         }
     }
 
     interface SingleNewsClickListener{
-        fun onSingleNewsClicked(positionOfSingleNewsInList: Int)
+        fun onSingleNewsClicked(titleOfSingleNewsInList: String)
     }
 
     companion object{
