@@ -5,7 +5,6 @@ import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import igor.kuridza.dice.newsreader.common.loadImage
-import igor.kuridza.dice.newsreader.model.SingleNews
 
 object DataBindingAdapter {
 

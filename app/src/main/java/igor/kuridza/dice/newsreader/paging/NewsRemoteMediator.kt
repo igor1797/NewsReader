@@ -1,11 +1,11 @@
 package igor.kuridza.dice.newsreader.paging
 
-import android.util.Log
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.rxjava2.RxRemoteMediator
 import igor.kuridza.dice.newsreader.common.API_KEY
+import igor.kuridza.dice.newsreader.common.BBC_NEWS_SOURCE
 import igor.kuridza.dice.newsreader.common.ITEMS_PER_PAGE
 import igor.kuridza.dice.newsreader.database.NewsDao
 import igor.kuridza.dice.newsreader.database.NewsRemoteKeysDao
@@ -39,22 +39,18 @@ class NewsRemoteMediator(
                     LoadType.REFRESH -> {
                         val storedTime = timePrefs.getTime()
                         if (timeService.isStoredDataOlderThanFiveMinutes(storedTime) || storedTime == 0L) {
-                            Log.d("TAGER", "loadSingle: Refresh")
                             val remoteKeys = getRemoteKeyClosestToCurrentPosition(state)
                             remoteKeys?.nextKey?.minus(1) ?: 1
                         } else {
-                            Log.d("TAGER", "loadSingle: dont refresh")
                             INVALID_PAGE
                         }
                     }
                     LoadType.PREPEND -> {
-                        Log.d("TAGER", "loadSingle: Prepend")
                         val remoteKeys = getRemoteKeyForFirstItem(state)
                             ?: throw InvalidObjectException("Result is empty")
                         remoteKeys.previousKey ?: INVALID_PAGE
                     }
                     LoadType.APPEND -> {
-                        Log.d("TAGER", "loadSingle: Append")
                         val remoteKeys = getRemoteKeyForLastItem(state)
                             ?: throw InvalidObjectException("Result is empty")
                         remoteKeys.nextKey ?: INVALID_PAGE
@@ -62,13 +58,11 @@ class NewsRemoteMediator(
                 }
             }
             .flatMap { page ->
-                Log.d("TAGER", "loadSingle: page $page")
                 if (page == INVALID_PAGE) {
-                    Log.d("TAGER", "loadSingle: endeee")
                     Single.just(MediatorResult.Success(true))
                 } else {
                     newsApiService.getNews(
-                        source = "us",
+                        source = BBC_NEWS_SOURCE,
                         perPage = ITEMS_PER_PAGE,
                         page = page,
                         apiKey = API_KEY
@@ -80,7 +74,6 @@ class NewsRemoteMediator(
                             MediatorResult.Success(endOfPaginationReached = (it.totalResults <= (page * ITEMS_PER_PAGE)))
                         }
                         .onErrorReturn {
-                            Log.d("TAGER", "error: ${it.message}")
                             MediatorResult.Error(it)
                         }
                 }
@@ -103,7 +96,6 @@ class NewsRemoteMediator(
         val nextKey = if (data.totalResults <= (page * ITEMS_PER_PAGE)) null else page + 1
 
         val keys = data.newsList.map {
-            Log.d("TAGER", "insertToDb: title ${it.title} prev $prevKey next $nextKey")
             NewsRemoteKeys(newsTitle = it.title, previousKey = prevKey, nextKey = nextKey)
         }
 

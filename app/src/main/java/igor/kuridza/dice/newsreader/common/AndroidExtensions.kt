@@ -32,5 +32,4 @@ fun View.gone(){
 }
 
 fun Disposable.addTo(compositeDisposable: CompositeDisposable): Disposable
-    = apply { compositeDisposable.add(this)
-    }
+    = apply { compositeDisposable.add(this) }

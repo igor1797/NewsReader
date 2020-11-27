@@ -27,12 +27,6 @@ class SingleNewsDetailsViewModel(
         }
     }
 
-    fun setSelectedSingleNewsByTitle(title: String){
-        val singleNews = newsList.value?.find { it.title == title }
-        mSelectedSingleNews.value = singleNews
-        mPositionOfSelectedSingleNews.value = newsList.value?.indexOf(singleNews)
-    }
-
     fun setPositionOfSelectedSingleNews(position: Int){
         mPositionOfSelectedSingleNews.value = position
     }

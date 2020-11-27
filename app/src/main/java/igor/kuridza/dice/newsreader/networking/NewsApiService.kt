@@ -9,7 +9,7 @@ interface NewsApiService {
 
     @GET("v2/top-headlines")
     fun getNews(
-        @Query("country") source: String,
+        @Query("sources") source: String,
         @Query("pageSize") perPage: Int,
         @Query("page") page: Int,
         @Query("apiKey") apiKey: String

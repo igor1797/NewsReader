@@ -7,7 +7,6 @@ import androidx.room.OnConflictStrategy.REPLACE
 import androidx.room.Query
 import igor.kuridza.dice.newsreader.common.NEWS_DATABASE_TABLE_NAME
 import igor.kuridza.dice.newsreader.model.SingleNews
-import io.reactivex.Maybe
 import io.reactivex.Single
 
 @Dao
