@@ -7,7 +7,6 @@ import igor.kuridza.dice.newsreader.R
 import igor.kuridza.dice.newsreader.databinding.FragmentSingleNewsDetailsBinding
 import igor.kuridza.dice.newsreader.ui.adapters.ViewPagerAdapter
 import igor.kuridza.dice.newsreader.ui.fragments.base.BaseFragment
-import kotlinx.android.synthetic.main.fragment_single_news_details.*
 import org.koin.android.viewmodel.ext.android.viewModel
 
 class SingleNewsDetailsFragment : BaseFragment<FragmentSingleNewsDetailsBinding>(){
@@ -27,12 +26,19 @@ class SingleNewsDetailsFragment : BaseFragment<FragmentSingleNewsDetailsBinding>
         setupViewPager()
         setupToolbar()
         observeNewsList()
+        showCurrentSelectedSingleNews()
     }
 
     private fun setViewBinding(){
         viewBinding.apply {
             viewModel = singleNewsDetailsViewModel
             lifecycleOwner = this@SingleNewsDetailsFragment
+        }
+    }
+
+    private fun setViewPagerCurrentItem(position: Int){
+        viewBinding.singleNewsDetailsViewPager.post {
+            viewBinding.singleNewsDetailsViewPager.setCurrentItem(position, true)
         }
     }
 
@@ -52,29 +58,36 @@ class SingleNewsDetailsFragment : BaseFragment<FragmentSingleNewsDetailsBinding>
         singleNewsDetailsViewModel.newsList.observe(this){ newsList ->
            newsList?.let {
                viewPagerAdapter.setNewsList(it)
+               setViewPagerCurrentItem(viewPagerAdapter.getSingleNewsPositionByTitle(titleOfSingleNews))
            }
         }
     }
 
+    private fun showCurrentSelectedSingleNews(){
+        singleNewsDetailsViewModel.positionOfSelectedSingleNews.value?.let {
+            setViewPagerCurrentItem(it)
+        }
+    }
+
     private fun setupToolbar() {
-        toolbar.setNavigationOnClickListener {
+        viewBinding.toolbar.setNavigationOnClickListener {
             findNavController().navigateUp()
         }
     }
 
     private fun setupViewPager(){
-        singleNewsDetailsViewPager.apply {
+        viewBinding.singleNewsDetailsViewPager.apply {
             adapter = viewPagerAdapter
             registerOnPageChangeCallback(singleNewsPageChangeCallback)
         }
     }
 
     private fun unRegisterOnPageChangeCallbackFromViewPager(){
-        singleNewsDetailsViewPager.unregisterOnPageChangeCallback(singleNewsPageChangeCallback)
+        viewBinding.singleNewsDetailsViewPager.unregisterOnPageChangeCallback(singleNewsPageChangeCallback)
     }
 
     override fun onDestroyView() {
-        super.onDestroyView()
         unRegisterOnPageChangeCallbackFromViewPager()
+        super.onDestroyView()
     }
 }

@@ -35,6 +35,11 @@ class ViewPagerAdapter: RecyclerView.Adapter<ViewPagerAdapter.ViewPagerHolder>()
         return newsList[position]
     }
 
+    fun getSingleNewsPositionByTitle(title: String): Int{
+        val singleNews = newsList.find { it.title == title }
+        return newsList.indexOf(singleNews)
+    }
+
     inner class ViewPagerHolder(private val bindingItem: ItemSingleNewsDetailsBinding): RecyclerView.ViewHolder(bindingItem.root){
 
         fun bindItem(singleNews: SingleNews){

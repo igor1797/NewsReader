@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data>
         <variable
@@ -24,7 +23,7 @@
             android:id="@+id/newsImage"
             android:layout_width="match_parent"
             android:layout_height="150dp"
-            app:imageUrl="@{singleNews.imagePath}"
+            imageUrl="@{singleNews.imagePath}"
             android:contentDescription="@string/newsImageContentDescriptionText"
             android:scaleType="centerCrop"
             android:layout_marginTop="16dp"

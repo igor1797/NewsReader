@@ -4,6 +4,13 @@
     <string name="newsImageContentDescriptionText">News image</string>
     <string name="errorDialogTitle">Error</string>
     <string name="errorDialogMessage">Ups, error occurred!</string>
-    <string name="errorNegativeButtonText">OK</string>
+    <string name="errorPositiveButtonText">OK</string>
     <string name="noInternetConnectionText">No internet connection!</string>
+    <string name="chooseSourceText">Choose source</string>
+    <string name="bbcNewsSourceText">BBC-news</string>
+    <string name="theNextWebSourceText">The Next Web</string>
+    <string name="bbcSportSourceText">BBC Sport</string>
+    <string name="bleacherReportSourceText">Bleacher Report</string>
+    <string name="businessInsiderSourceText">Business Insider</string>
+    <string name="confirmPickedSourceImage">Confirm picked source</string>
 </resources>

@@ -26,7 +26,15 @@ class NewsRemoteMediator(
     private val newsApiService: NewsApiService,
     private val timeService: TimeService,
     private val timePrefs: TimePrefs
-): RxRemoteMediator<Int, SingleNews>() {
+    ): RxRemoteMediator<Int, SingleNews>() {
+
+    private var source: String = BBC_NEWS_SOURCE
+    private lateinit var oldSource: String
+
+    fun setSource(newSource: String) {
+        oldSource = source
+        source = newSource
+    }
 
     override fun loadSingle(
         loadType: LoadType,
@@ -38,7 +46,7 @@ class NewsRemoteMediator(
                 when (loadType) {
                     LoadType.REFRESH -> {
                         val storedTime = timePrefs.getTime()
-                        if (timeService.isStoredDataOlderThanFiveMinutes(storedTime) || storedTime == 0L) {
+                        if (timeService.isStoredDataOlderThanFiveMinutes(storedTime) || storedTime == 0L || oldSource != source) {
                             val remoteKeys = getRemoteKeyClosestToCurrentPosition(state)
                             remoteKeys?.nextKey?.minus(1) ?: 1
                         } else {
@@ -62,7 +70,7 @@ class NewsRemoteMediator(
                     Single.just(MediatorResult.Success(true))
                 } else {
                     newsApiService.getNews(
-                        source = BBC_NEWS_SOURCE,
+                        source = source,
                         perPage = ITEMS_PER_PAGE,
                         page = page,
                         apiKey = API_KEY
@@ -70,7 +78,7 @@ class NewsRemoteMediator(
                         .map {
                             insertToDb(page, loadType, it)
                         }
-                        .map<MediatorResult>{
+                        .map<MediatorResult> {
                             MediatorResult.Success(endOfPaginationReached = (it.totalResults <= (page * ITEMS_PER_PAGE)))
                         }
                         .onErrorReturn {

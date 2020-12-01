@@ -32,7 +32,7 @@ class SingleNewsDetailsViewModel(
     }
 
     override fun onCleared() {
-        super.onCleared()
         newsRepository.clearDisposable()
+        super.onCleared()
     }
 }

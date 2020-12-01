@@ -6,11 +6,12 @@ import igor.kuridza.dice.newsreader.common.NEWS_DATABASE_NAME
 import igor.kuridza.dice.newsreader.database.NewsDao
 import igor.kuridza.dice.newsreader.database.NewsDatabase
 import igor.kuridza.dice.newsreader.database.NewsRemoteKeysDao
+import igor.kuridza.dice.newsreader.persistence.SelectedRadioButtonOptionPrefs
 import igor.kuridza.dice.newsreader.persistence.TimePrefs
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
-private const val PREFERENCES_DATA_STORE_NAME = "TimeDataStore"
+private const val PREFERENCES_DATA_STORE_NAME = "PreferencesDataStore"
 
 val prefsModule = module {
 
@@ -20,6 +21,10 @@ val prefsModule = module {
 
     single {
         TimePrefs(get())
+    }
+
+    single {
+        SelectedRadioButtonOptionPrefs(get())
     }
 }
 
